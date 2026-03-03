@@ -1,0 +1,14 @@
+{
+	"main": [
+		{
+			"name": "x",
+			"icon": "FaXTwitter",
+			"link": ""
+		},
+		{
+			"name": "github",
+			"icon": "FaGithub",
+			"link": ""
+		}
+	]
+}

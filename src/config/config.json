@@ -1,0 +1,58 @@
+{
+	"site": {
+		"title": "",
+		"base_url": "",
+		"base_path": "/",
+		"trailing_slash": false,
+		"favicon": "/images/favicon.ico",
+		"logo": "/images/logo.png",
+		"logo_darkmode": "/images/logo-darkmode.png",
+		"logo_width": "30",
+		"logo_height": "30",
+		"logo_text": ""
+	},
+
+	"settings": {
+		"search": true,
+		"sticky_header": true,
+		"theme_switcher": true,
+		"default_theme": "light",
+		"pagination": 20,
+		"summary_length": 200,
+		"blog_folder": "blog"
+	},
+
+	"announcement": {
+		"enable": false,
+		"content": "",
+		"expire_days": 7
+	},
+
+	"params": {
+		"contact_form_action": "",
+		"copyright": ""
+	},
+
+	"navigation_button": {
+		"enable": false,
+		"label": "Github",
+		"link": ""
+	},
+
+	"google_tag_manager": {
+		"enable": false,
+		"gtm_id": "GTM-XXXXXX"
+	},
+
+	"disqus": {
+		"enable": false,
+		"shortname": "themefisher-template",
+		"settings": {}
+	},
+
+	"metadata": {
+		"meta_author": "",
+		"meta_image": "/images/og-image.webp",
+		"meta_description": "astro and tailwind boilerplate"
+	}
+}

@@ -1,0 +1,75 @@
+---
+import Logo from "@/components/Logo.astro";
+import Social from "@/components/Social.astro";
+import config from "@/config/config.json";
+import menu from "@/config/menu.json";
+import social from "@/config/social.json";
+import { markdownify } from "@/lib/utils/textConverter";
+
+const {
+  footer,
+}: {
+  footer: {
+    about: { name: string; url: string }[];
+    friendship: { name: string; url: string }[];
+  };
+} = menu;
+---
+
+<footer class="bg-light dark:bg-darkmode-light">
+  <div class="container">
+    <div class="row items-start py-10">
+      <div class="mb-8 lg:col-6 lg:mb-0">
+        <Logo />
+        <div class="mt-5">
+          <Social source={social.main} className="social-icons" />
+        </div>
+      </div>
+      <div class="mb-8 lg:col-2 lg:offset-2 lg:mb-0">
+        <h4 class="mb-4">Friendship</h4>
+        <ul>
+          {
+            footer.friendship.map((item) => (
+              <li class="mb-2">
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-text hover:text-primary dark:text-darkmode-text dark:hover:text-darkmode-primary"
+                >
+                  {item.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="mb-8 lg:col-2 lg:mb-0">
+        <h4 class="mb-4">About</h4>
+        <ul>
+          {
+            footer.about.map((item) => (
+              <li class="mb-2">
+                <a
+                  href={item.url}
+                  class="text-text hover:text-primary dark:text-darkmode-text dark:hover:text-darkmode-primary"
+                >
+                  {item.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+  {
+    config.params.copyright && (
+      <div class="border-t border-border py-7 dark:border-darkmode-border">
+        <div class="container text-center text-text-light dark:text-darkmode-text-light">
+          <p set:html={markdownify(config.params.copyright)} />
+        </div>
+      </div>
+    )
+  }
+</footer>

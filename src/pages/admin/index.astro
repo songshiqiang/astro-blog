@@ -1,0 +1,12 @@
+---
+import Base from "@/layouts/Base.astro";
+import AdminPosts from "@/components/admin/AdminPosts";
+---
+
+<Base title="博客管理">
+  <section class="section">
+    <div class="container">
+      <AdminPosts client:only="react" />
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,80 @@
+---
+import BlogListItem from "@/components/BlogListItem.astro";
+import Share from "@/components/Share.astro";
+import Disqus from "@/helpers/Disqus";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import dateFormat from "@/lib/utils/dateFormat";
+import similarItems from "@/lib/utils/similarItems";
+import { humanize, markdownify, slugify } from "@/lib/utils/textConverter";
+import { render } from "astro:content";
+import { FaRegClock, FaRegFolder, FaRegUserCircle } from "react-icons/fa";
+import ImageMod from "./components/ImageMod.astro";
+
+const COLLECTION_FOLDER = "blog";
+const { post } = Astro.props;
+
+const posts = await getSinglePage(COLLECTION_FOLDER);
+const similarPosts = similarItems(post, posts);
+const { Content } = await render(post);
+const { title, description, author, categories, date, tags } = post.data;
+---
+
+<section class="section pt-7">
+  <div class="container">
+    <div class="row justify-center">
+      <article class="lg:col-10">
+        <h1 set:html={markdownify(title)} class="h2 mb-4 text-center" />
+        <ul class="mb-4 flex flex-wrap items-center justify-center gap-3">
+          {
+            categories.map((category: string) => (
+              <li class="inline-block">
+                <a
+                  href={`/categories/${slugify(category)}`}
+                  class="flex items-center rounded-full bg-theme-light px-3 py-1 text-sm text-dark hover:bg-primary hover:text-white transition duration-200 dark:bg-darkmode-theme-light dark:text-darkmode-light dark:hover:bg-primary dark:hover:text-white"
+                >
+                  <FaRegFolder className={"mr-2"} />
+                  {humanize(category)}
+                </a>
+              </li>
+            ))
+          }
+          {
+            date && (
+              <li class="inline-block">
+                <span class="flex items-center rounded-full bg-theme-light px-3 py-1 text-sm text-dark dark:bg-darkmode-theme-light dark:text-darkmode-light">
+                  <FaRegClock className={"mr-2"} />
+                  {dateFormat(date)}
+                </span>
+              </li>
+            )
+          }
+        </ul>
+        <div class="content mb-10">
+          <Content />
+        </div>
+        <div class="row items-start justify-between">
+          <div class="flex items-center lg:col-4">
+            <h5 class="mr-3">Share :</h5>
+            <Share
+              className="social-icons"
+              title={title}
+              description={description}
+              slug={post.id}
+            />
+          </div>
+        </div>
+        <Disqus className="mt-20" client:only="react" />
+      </article>
+    </div>
+
+    <!-- Related posts -->
+    <div class="section pb-0">
+      <h2 class="h3 mb-12 text-center">Related Posts</h2>
+      <div class="row justify-center">
+        <div class="lg:col-8">
+          {similarPosts.map((post) => <BlogListItem data={post} />)}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,193 @@
+---
+import ScreenshotCarousel from "@/layouts/components/ScreenshotCarousel";
+import ImageMod from "@/components/ImageMod.astro";
+import Base from "@/layouts/Base.astro";
+import { getEntry } from "astro:content";
+
+import config from "@/config/config.json";
+
+const homepage = await getEntry("homepage", "-index");
+if (!homepage) {
+  throw new Error("Homepage content not found");
+}
+const { banner, projects } = homepage.data;
+const { title } = config.site;
+---
+
+<Base>
+  <!-- Banner -->
+  <section class="section pt-14 pb-0">
+    <div class="container text-center">
+      <div class="relative inline-block w-full max-w-4xl">
+        <!-- Canvas 背景动画 -->
+        <canvas
+          id="hero-canvas"
+          class="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full h-[300px] pointer-events-none opacity-40 dark:opacity-20"
+        ></canvas>
+
+        <div class="relative z-10 py-10">
+          <div class="relative inline-block">
+            <div
+              class="absolute -inset-1 rounded-full bg-linear-to-r from-primary to-secondary opacity-25 blur-2xl"
+            >
+            </div>
+            <h1 class="text-h1 mb-4 relative">
+              欢迎来到 <span
+                id="typing-text"
+                class="text-primary inline-block min-w-[200px] text-left"
+              ></span> 的个人主页
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      <style>
+        #typing-text::after {
+          content: "|";
+          animation: blink 1s infinite;
+          margin-left: 2px;
+        }
+        @keyframes blink {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0;
+          }
+        }
+      </style>
+
+      <script define:vars={{ title }}>
+        // 打字动画逻辑
+        const text = title;
+        const typingElement = document.getElementById("typing-text");
+        let index = 0;
+
+        function type() {
+          if (typingElement && index < text.length) {
+            typingElement.textContent += text.charAt(index);
+            index++;
+            setTimeout(type, 150);
+          }
+        }
+
+        // Canvas 粒子动画逻辑
+        function initCanvasAnimation() {
+          const canvas = document.getElementById("hero-canvas");
+          if (!canvas) return;
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return;
+
+          let particles = [];
+          const particleCount = 50;
+
+          class Particle {
+            constructor() {
+              this.x = Math.random() * canvas.width;
+              this.y = Math.random() * canvas.height;
+              this.size = Math.random() * 2 + 1;
+              this.speedX = (Math.random() - 0.5) * 0.5;
+              this.speedY = (Math.random() - 0.5) * 0.5;
+              this.opacity = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+              this.x += this.speedX;
+              this.y += this.speedY;
+
+              if (this.x > canvas.width) this.x = 0;
+              if (this.x < 0) this.x = canvas.width;
+              if (this.y > canvas.height) this.y = 0;
+              if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+              if (!ctx) return;
+              ctx.fillStyle = `rgba(59, 130, 246, ${this.opacity})`; // 采用 primary 颜色主题蓝
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+
+          function resize() {
+            if (!canvas) return;
+            const container = canvas.parentElement;
+            if (container) {
+              canvas.width = container.offsetWidth;
+              canvas.height = 300;
+            }
+          }
+
+          function animate() {
+            if (!ctx || !canvas) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((particle) => {
+              particle.update();
+              particle.draw();
+            });
+
+            // 绘制连线
+            for (let i = 0; i < particles.length; i++) {
+              for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 100) {
+                  ctx.beginPath();
+                  ctx.strokeStyle = `rgba(59, 130, 246, ${0.1 * (1 - distance / 100)})`;
+                  ctx.lineWidth = 1;
+                  ctx.moveTo(particles[i].x, particles[i].y);
+                  ctx.lineTo(particles[j].x, particles[j].y);
+                  ctx.stroke();
+                }
+              }
+            }
+
+            requestAnimationFrame(animate);
+          }
+
+          window.addEventListener("resize", resize);
+          resize();
+
+          particles = [];
+          for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+          }
+
+          animate();
+        }
+
+        // 页面加载完成后开始动画
+        document.addEventListener("astro:page-load", () => {
+          const typingElement = document.getElementById("typing-text");
+          if (typingElement) {
+            typingElement.textContent = "";
+            index = 0;
+            type();
+          }
+          initCanvasAnimation();
+        });
+
+        // 初始加载也执行
+        type();
+        initCanvasAnimation();
+      </script>
+      <p
+        class="mb-8 text-lg opacity-80 max-w-2xl mx-auto"
+        set:html={banner.content}
+      />
+      {
+        banner.button.enable && (
+          <a class="btn btn-primary" href={banner.button.link}>
+            {banner.button.label}
+          </a>
+        )
+      }
+    </div>
+  </section>
+</Base>

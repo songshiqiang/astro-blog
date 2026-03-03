@@ -1,0 +1,42 @@
+{
+	"main": [
+		{
+			"name": "Home",
+			"url": "/"
+		},
+		{
+			"name": "Blog",
+			"url": "/blog"
+		},
+		{
+			"name": "Categories",
+			"url": "/categories"
+		},
+
+		{
+			"name": "Contact",
+			"url": "/contact"
+		},
+		{
+			"name": "About",
+			"url": "/about"
+		}
+	],
+	"footer": {
+		"friendship": [],
+		"about": [
+			{
+				"name": "About",
+				"url": "/about"
+			},
+			{
+				"name": "Contact",
+				"url": "/contact"
+			},
+			{
+				"name": "Privacy Policy",
+				"url": "/privacy-policy"
+			}
+		]
+	}
+}

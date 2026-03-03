@@ -1,0 +1,63 @@
+---
+import config from "@/config/config.json";
+import dateFormat from "@/lib/utils/dateFormat";
+import { humanize, plainify, slugify } from "@/lib/utils/textConverter";
+import { FaRegClock, FaRegFolder, FaRegUserCircle } from "react-icons/fa";
+import ImageMod from "./ImageMod.astro";
+
+const {
+  summary_length,
+  blog_folder,
+}: { summary_length: number; blog_folder: string } = config.settings;
+const { data } = Astro.props;
+const { title, date, author, categories, description } = data.data;
+---
+
+<div
+  class="mb-10 flex flex-col items-start gap-6 pb-10 border-b border-border dark:border-darkmode-border last:border-0 last:pb-0"
+>
+  <div class="flex-1">
+    <h3 class="mb-3 h4">
+      <a
+        href={`/${blog_folder}/${data.id}`}
+        class="block hover:text-primary transition duration-200"
+      >
+        {title}
+      </a>
+    </h3>
+    <ul class="mb-4 flex flex-wrap items-center gap-3">
+      {
+        categories.map((category: string) => (
+          <li class="inline-block">
+            <a
+              href={`/categories/${slugify(category)}`}
+              class="flex items-center rounded-full bg-theme-light px-3 py-1 text-xs text-dark hover:bg-primary hover:text-white transition duration-200 dark:bg-darkmode-theme-light dark:text-darkmode-light dark:hover:bg-primary dark:hover:text-white"
+            >
+              <FaRegFolder className={"mr-1.5"} />
+              {humanize(category)}
+            </a>
+          </li>
+        ))
+      }
+      {
+        date && (
+          <li class="inline-block">
+            <span class="flex items-center rounded-full bg-theme-light px-3 py-1 text-xs text-dark dark:bg-darkmode-theme-light dark:text-darkmode-light">
+              <FaRegClock className={"mr-1.5"} />
+              {dateFormat(date)}
+            </span>
+          </li>
+        )
+      }
+    </ul>
+    <p class="mb-6 line-clamp-3">
+      {description || plainify(data.body?.slice(0, Number(summary_length)))}
+    </p>
+    <a
+      class="text-primary font-semibold hover:underline"
+      href={`/${blog_folder}/${data.id}`}
+    >
+      阅读全文 &rarr;
+    </a>
+  </div>
+</div>

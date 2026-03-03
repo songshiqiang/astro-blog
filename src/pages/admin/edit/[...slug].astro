@@ -1,0 +1,32 @@
+---
+export const prerender = false;
+import BlogEditor from "@/components/admin/BlogEditor";
+import "@/styles/main.css";
+
+const { slug } = Astro.params;
+if (!slug) {
+  return Astro.redirect("/admin");
+}
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>编辑文章 | 管理后台</title>
+  </head>
+  <body class="bg-gray-50 m-0 p-0 overflow-hidden font-sans">
+    <div id="editor-root" class="h-screen w-screen">
+      <BlogEditor client:only="react" slug={slug} />
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  /* 确保编辑器全屏展示 */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+</style>
